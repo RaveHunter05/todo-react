@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import logo from "./logo.svg";
-import { BsTrash } from "react-icons/bs";
 import "./App.css";
+
+import AddTodo from "./components/AddTodo";
+import Todos from "./components/Todos";
 
 function App() {
   const [todo, setTodo] = useState("");
@@ -12,48 +14,11 @@ function App() {
     <div className="App">
       <h2>ToDo List</h2>
 
-      <input
-        type="text"
-        placeholder="Add todo"
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
-      />
-      <button
-        onClick={() => dispatch({ type: "ADD_TODO", payload: { value: todo } })}
-      >
-        Add Todo
-      </button>
+      {/** Add ToDos */}
+      <AddTodo todo={todo} setTodo={setTodo} dispatch={dispatch} />
+      {/** List ToDos  */}
 
-      <section>
-        {todos.map((todoValue, index) => (
-          <article className="todo" key={index}>
-            <input
-              type="checkbox"
-              onChange={() =>
-                dispatch({
-                  type: "CHANGE_TODO",
-                  payload: {
-                    id: index,
-                  },
-                })
-              }
-            />
-            <p
-              style={{
-                textDecoration: !!todoValue.completed ? "line-through" : "none",
-              }}
-            >
-              {todoValue.value}
-            </p>
-            <BsTrash
-              onClick={() =>
-                dispatch({ type: "REMOVE_TODO", payload: { id: index } })
-              }
-              disabled={index === 0 ? true : false}
-            />
-          </article>
-        ))}
-      </section>
+      <Todos todos={todos} dispatch={dispatch} />
     </div>
   );
 }
