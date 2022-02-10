@@ -1,36 +1,59 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import logo from "./logo.svg";
+import { BsTrash } from "react-icons/bs";
 import "./App.css";
 
 function App() {
-  const [todo, setTodo] = useState([]);
-
+  const [todo, setTodo] = useState("");
   const dispatch = useDispatch();
-
-  const todos = useSelector((store) => store.todo.todos);
-
-  useEffect(() => {
-    setTodo(todos);
-  }, []);
-
+  const todos = useSelector((state) => state.todo.todos);
   return (
     <div className="App">
-      <div>
-        <h2>Ez todo app made with react</h2>
-        <section>
-          <input type="text" placeholder="New Task" />
-          <button
-            onClick={() =>
-              dispatch({ type: "ADD_TODO", payload: { value: "hola" } })
-            }
-          >
-            {" "}
-            Add{" "}
-          </button>
-        </section>
-        <section></section>
-      </div>
+      <h2>ToDo List</h2>
+
+      <input
+        type="text"
+        placeholder="Add todo"
+        value={todo}
+        onChange={(e) => setTodo(e.target.value)}
+      />
+      <button
+        onClick={() => dispatch({ type: "ADD_TODO", payload: { value: todo } })}
+      >
+        Add Todo
+      </button>
+
+      <section>
+        {todos.map((todoValue, index) => (
+          <article className="todo" key={index}>
+            <input
+              type="checkbox"
+              onChange={() =>
+                dispatch({
+                  type: "CHANGE_TODO",
+                  payload: {
+                    id: index,
+                  },
+                })
+              }
+            />
+            <p
+              style={{
+                textDecoration: !!todoValue.completed ? "line-through" : "none",
+              }}
+            >
+              {todoValue.value}
+            </p>
+            <BsTrash
+              onClick={() =>
+                dispatch({ type: "REMOVE_TODO", payload: { id: index } })
+              }
+              disabled={index === 0 ? true : false}
+            />
+          </article>
+        ))}
+      </section>
     </div>
   );
 }

@@ -5,11 +5,12 @@
 const initialState = {
   todos: [
     {
-      id: 1,
+      id: 0,
       value: "Walk the dog",
       completed: false,
     },
   ],
+  numero: 0,
 };
 
 // Actions
@@ -18,6 +19,7 @@ const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
 const CHANGE_TODO = "CHANGE_TODO";
 const ALL_TODOS = "ALL_TODOS";
+const ADD_NUMBER = "ADD_NUMBER";
 
 // Actual reducer
 
@@ -43,17 +45,22 @@ export default function reducer(state = initialState, action) {
       };
     case ALL_TODOS:
       return [...state];
+
     case CHANGE_TODO:
-      const completedTodos = [...state.todos].map((x) =>
-        x.id == action.payload.id
-          ? {
-              id: x.id,
-              value: x.value,
-              completed: !x.completed,
-            }
-          : x
-      );
-      return completedTodos;
+      let completedTodos = state.todos.map((x) => {
+        return x.id === action.payload.id
+          ? { ...x, completed: !x.completed }
+          : x;
+      });
+      return {
+        ...state,
+        todos: completedTodos,
+      };
+    case ADD_NUMBER:
+      return {
+        ...state,
+        numero: state.numero + 1,
+      };
     default:
       return state;
   }
